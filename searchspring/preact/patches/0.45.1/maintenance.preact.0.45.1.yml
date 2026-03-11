@@ -1,0 +1,18 @@
+version: 0.45.1
+description: 'Upgrade Cypress'
+
+steps:
+    # execute Cypress migration script
+    - run: |
+        sh ./patch/migrateCypress.sh
+
+    - files:
+        package.json:
+            action: edit-json
+            changes:
+                - update:
+                    properties: {
+                        devDependencies: {
+                            "cypress": "^12.15.0",
+                        }
+                    }

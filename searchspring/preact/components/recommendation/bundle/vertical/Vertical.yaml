@@ -1,0 +1,30 @@
+# component descriptor file
+
+# custom component variables
+variables: [
+  {
+    name: 'addToCart',
+    message: 'Choose an addToCart method:',
+    type: 'list',
+    choices: [
+      {
+        name: 'shopify',
+        value: "import { addToCart } from '@searchspring/snap-platforms/shopify';",
+      },
+      {
+        name: 'bigcommerce',
+        value:  "import { addToCart } from '@searchspring/snap-platforms/bigcommerce';",
+      },
+      {
+        name: 'magento2',
+        value: "import { addToCart } from '@searchspring/snap-platforms/magento2';",
+      },
+      {
+        name: custom,
+        value: "const addToCart = (e, items)=> console.log('need to add these to the platform cart', items);",
+
+      }
+    ],
+    default: 'custom',
+  },
+]

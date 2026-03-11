@@ -1,0 +1,18 @@
+version: 0.43.0
+description: 'first updater release 0.43.0!'
+
+steps:
+    - files:
+        package.json:
+            action: edit-json
+            changes:
+                # update snap packages and normalize other core dependencies
+                - update:
+                    properties:
+                        "dependencies": {
+                            "@searchspring/snap-preact": "^0.43.0",
+                            "@searchspring/snap-preact-components": "^0.43.0",
+                            "mobx": "^6.3.12",
+                            "mobx-react": "^7.2.1",
+                            "preact": "^10.6.4"
+                        }

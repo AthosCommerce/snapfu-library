@@ -1,0 +1,32 @@
+version: 0.5.0
+description: 'normalize support files'
+
+steps:
+    # normalize set of cypress files
+    - run: |
+            cp ./patch/tests/cypress.json ./tests/cypress.json
+            cp ./patch/tests/cypress/support/commands.js ./tests/cypress/support/commands.js
+            cp ./patch/tests/cypress/support/index.js ./tests/cypress/support/index.js
+            cp ./patch/tests/cypress/support/custom.js ./tests/cypress/support/custom.js
+            cp ./patch/tests/cypress/plugins/index.js ./tests/cypress/plugins/index.js
+
+    # normalize webpack configs
+    # * adding classname to style blocks
+    # * adding webSocketURL.hostname
+    - run: |
+            cp ./patch/webpack.common.js ./webpack.common.js
+            cp ./patch/webpack.dev.js ./webpack.dev.js
+            cp ./patch/webpack.modern.js ./webpack.modern.js
+            cp ./patch/webpack.universal.js ./webpack.universal.js
+
+    - files:
+        package.json:
+            action: edit-json
+            changes:
+                # update webpack dev server
+                - update:
+                    properties: {
+                        devDependencies: {
+                            "webpack-dev-server": "^4.13.1",
+                        }
+                    }

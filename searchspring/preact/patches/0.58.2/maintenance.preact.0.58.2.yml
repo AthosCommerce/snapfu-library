@@ -1,0 +1,22 @@
+version: 0.58.2
+description: 'Cypress Retry'
+
+steps:
+    # normalize set of cypress files
+    - run: |
+            cp ./patch/tests/cypress/support/e2e.js ./tests/cypress/support/e2e.js
+            cp ./patch/tests/cypress.config.js ./tests/cypress.config.js
+
+    - files:
+        package.json:
+            action: edit-json
+            changes:
+                - update:
+                    properties: {
+                        scripts: {
+                          "test": "kill $(lsof -ti:3333,8888); webpack serve --config webpack.dev.js & ((cypress run --project tests || cypress run --project tests) && kill $(lsof -ti:3333,8888))",
+                        },
+                        devDependencies: {
+                            "cypress-fail-fast": "^7.1.0",
+                        }
+                    }

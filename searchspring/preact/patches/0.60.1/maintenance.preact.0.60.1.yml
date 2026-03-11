@@ -1,0 +1,14 @@
+version: 0.60.1
+description: 'find and replace email.html cache keys'
+
+steps:
+    - files:
+        'public/email.html':
+            action: find-replace
+            changes:
+                - replace:
+                      pattern: const profileKey = `\/api\/personalized-recommendations\/profile.json{.*$
+                      replacement: const profileKey = `/api/personalized-recommendations/profile.json/*`;
+                - replace:
+                      pattern: const recommendKey = `\/boost\/\${siteId}\/recommend{.*$
+                      replacement: const recommendKey = `/boost/${siteId}/recommend/*`;

@@ -1,0 +1,30 @@
+/*
+	SASS for use in email recommendation component
+	edit as needed
+*/
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+.ss__result {
+	.ss__result__image-wrapper {
+		.ss__image {
+			img {
+
+			}
+		}
+	}
+
+	.ss__result__details {
+		.ss__result__details__title {
+			a {
+
+			}
+		}
+		.ss__result__details__pricing {
+
+		}
+	}
+}

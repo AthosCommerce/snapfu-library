@@ -1,0 +1,6 @@
+version: beacon2-tests
+description: 'adds beacon2 tests'
+
+steps:
+    - run: |
+        sh ./patch/beacon2-tests.sh

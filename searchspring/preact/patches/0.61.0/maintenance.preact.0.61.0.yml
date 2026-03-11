@@ -1,0 +1,13 @@
+version: 0.61.0
+description: 'maintenance 0.61.0 - locking in sass dependency'
+
+steps:
+    - files:
+        package.json:
+            action: edit-json
+            changes:
+                - update:
+                    properties:
+                        "devDependencies": {
+                            "sass": "1.78.0"
+                        }

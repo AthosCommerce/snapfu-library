@@ -1,0 +1,16 @@
+version: 0.56.1
+description: 'adjust github action add concurency check'
+
+steps:
+    # normalize set of cypress files
+    - run: |
+            cp ./patch/tests/cypress/support/commands.js ./tests/cypress/support/commands.js
+    - files:
+        .github/workflows/deploy.yml:
+            action: edit-yaml
+            changes:
+                - update:
+                    path: ['concurrency']
+                    value:
+                        group: ${{ github.workflow }}-${{ github.ref }}
+                        cancel-in-progress: true

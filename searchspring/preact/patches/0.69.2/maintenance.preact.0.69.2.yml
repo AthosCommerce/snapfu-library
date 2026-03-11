@@ -1,0 +1,6 @@
+version: 0.69.2
+description: update universal webpack build file
+
+steps:
+    - run: |
+            cp ./patch/webpack.universal.js ./webpack.universal.js

@@ -1,0 +1,9 @@
+version: 0.72.1
+description: "maintenance 0.72.1 - build identification"
+
+steps:
+    - run: |
+          cp ./patch/src/webpack.common.js ./webpack.common.js
+          cp ./patch/src/webpack.dev.js ./webpack.dev.js
+          cp ./patch/src/webpack.modern.js ./webpack.modern.js
+          cp ./patch/src/webpack.universal.js ./webpack.universal.js

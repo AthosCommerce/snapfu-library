@@ -1,0 +1,14 @@
+version: 0.58.1
+description: 'Update LHCI'
+
+steps:
+    - files:
+        package.json:
+            action: edit-json
+            changes:
+                - update:
+                    properties: {
+                        devDependencies: {
+                            "@lhci/cli": "^0.14.0",
+                        }
+                    }

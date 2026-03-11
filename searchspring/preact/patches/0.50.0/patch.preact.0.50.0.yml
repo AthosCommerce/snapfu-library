@@ -1,0 +1,17 @@
+version: 0.50.0
+description: 'release 0.50.0'
+
+steps:
+    - files:
+        package.json:
+            action: edit-json
+            changes:
+                - move:
+                    path: ['searchspring', 'template']
+                    newPath: ['searchspring', 'scaffold']
+                - update:
+                    properties:
+                        "dependencies": {
+                            "@searchspring/snap-preact": "0.50.0",
+                            "@searchspring/snap-preact-components": "0.50.0"
+                        }

@@ -1,0 +1,13 @@
+version: 1.1.4
+description: 'release 1.1.4'
+
+steps:
+    - files:
+        package.json:
+            action: edit-json
+            changes:
+                - update:
+                    properties:
+                        "dependencies": {
+                            "@athoscommerce/snap-preact": "1.1.4"
+                        }

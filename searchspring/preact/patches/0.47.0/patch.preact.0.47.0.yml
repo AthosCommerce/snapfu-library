@@ -1,0 +1,14 @@
+version: 0.47.0
+description: 'release 0.47.0'
+
+steps:
+    - files:
+        package.json:
+            action: edit-json
+            changes:
+                - update:
+                    properties:
+                        "dependencies": {
+                            "@searchspring/snap-preact": "0.47.0",
+                            "@searchspring/snap-preact-components": "0.47.0"
+                        }

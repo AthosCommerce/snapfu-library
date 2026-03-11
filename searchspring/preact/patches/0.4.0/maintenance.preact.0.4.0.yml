@@ -1,0 +1,42 @@
+version: 0.4.0
+description: 'adjust github action for future updates'
+
+steps:
+    # add a line to .gitignore to ignore future patch files
+    - run: |
+        grep -qo '^patch$' .gitignore || echo '\n\n# ignore patch\npatch' >> .gitignore
+    - files:
+        .github/workflows/deploy.yml:
+            action: edit-yaml
+            changes:
+                - update:
+                    path: ['on']
+                    value:
+                        push:
+                            branches:
+                                - '**'
+                        pull_request:
+                            branches:
+                                - '**'
+
+                - update:
+                    path: ['jobs', 'Publish', 'runs-on']
+                    value: ${{ (startsWith(github.head_ref, 'updater/patch/') || startsWith(github.ref_name, 'updater/patch/') || startsWith(github.head_ref, 'updater/revert/') || startsWith(github.ref_name, 'updater/revert/') || (github.ref_name == github.event.repository.master_branch && (contains(github.event.head_commit.message,'from searchspring-implementations/updater/patch/') || contains(github.event.head_commit.message,'from searchspring-implementations/updater/revert/')))) && 'snapp-updater' || 'ubuntu-latest' }}
+
+                    
+                - update:
+                    path: ['jobs', 'Publish', 'timeout-minutes']
+                    value: 10
+
+                - update:
+                    path: ['jobs', 'Publish', 'steps', 1, 'with', 'secrets']
+                    value: ${{ toJSON(secrets) }}
+
+        package.json:
+            action: edit-json
+            changes:
+                # remove classnames
+                - remove:
+                    properties: {
+                        dependencies: ['classnames']
+                    }

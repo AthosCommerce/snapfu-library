@@ -1,0 +1,11 @@
+version: 0.57.0
+description: 'find and replace old Shopify API endpoints'
+
+steps:
+    - files:
+        '**/*.{js,jsx,ts,tsx}':
+            action: find-replace
+            changes:
+                - replace:
+                      pattern: \/api\/\d{4}-\d{2}\/graphql.json
+                      replacement: /api/2024-04/graphql.json

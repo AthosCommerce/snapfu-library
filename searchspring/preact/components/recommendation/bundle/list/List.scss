@@ -1,0 +1,122 @@
+/*
+	SASS for use in bundle component
+	edit as needed
+*/
+.ss__bundle__list {
+	width: 500px;
+	border: 1px solid black;
+	padding: 5px;
+	height: fit-content;
+
+	.ss__recommendation-profile-tracker {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.ss__recommendation-bundle__wrapper {
+		order: 3;
+	}
+
+	.ss__recommendation-bundle__wrapper__cta {
+		order: 2;
+		padding: 10px 0px;
+
+		.cta__add-button--thanks {
+			background: white;
+			border: 3px solid black;
+			color: black;
+		}
+
+		.ss__button {
+			cursor: pointer;
+			border: 3px solid black;
+		}
+	}
+
+	.ss__recommendation-bundle {
+ 
+		.ss__recommendation-bundle__title {
+			order:1;
+		}
+	
+		.ss__checkbox {
+			
+			cursor: pointer;
+			background-color: white;
+			&.ss__bundled__result--bundle-checked {
+				background-color: black;
+				svg {
+					fill: white;
+				}
+			}
+		}
+	
+		.ss__bundled__result {
+			.ss__bundled__result__details {
+				padding-left: 10px;
+			}
+		}
+
+		.ss__recommendation-bundle__wrapper__cta {
+			.cta__inner {
+				.swiper-slide, .swiper-slide-visible.swiper-last-visible-slide {
+					.cta__inner__image-wrapper .ss__icon {
+						display: none,
+					}
+				}
+
+				.swiper-slide-visible {
+					.cta__inner__image-wrapper .ss__icon {
+						display: block,
+					}
+				}
+			}
+
+			.cta__inner__image-wrapper .ss__icon {
+				top: 50%;
+				position: absolute;
+    			right: -0.5em;
+
+			}
+
+			.cta__inner__image-wrapper {
+				display: flex;
+				flex-direction: row;
+				margin: 0px 15px;
+			}
+		}
+		
+	}
+	
+	
+	
+	@media screen and (max-width: 600px) {
+
+		.ss--other {
+			width:100%;
+			max-width: 500px;
+		}
+
+		.ss__recommendation-bundle__wrapper__selector__result-wrapper__seed-badge {
+			font-size: 1.0rem !important;
+		}
+		
+		.ss__carousel.ss__recommendation__carousel {
+			position: relative;
+		}
+	
+		.ss__carousel__prev-wrapper {
+			position: absolute;
+			top: 60px;
+			left: 0px;
+			z-index: 10;
+		}
+	
+		.ss__carousel__next-wrapper {
+			position: absolute;
+			top: 60px;
+			right: 0px;
+			z-index: 10;
+		}
+	}
+}
