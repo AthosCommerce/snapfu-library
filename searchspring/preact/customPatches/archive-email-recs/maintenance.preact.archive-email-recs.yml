@@ -1,0 +1,28 @@
+version: archive-email-recs
+description: 'archives and removes email recommendation profile'
+runInAction: true
+
+steps:
+    - run: |
+        sh ./patch/archive-email-recs.sh
+        rm -f tests/cypress/integration/email.spec.js
+        rm -f tests/cypress/e2e/email.cy.js
+    - files:
+        src/index.js:
+            action: find-replace
+            changes:
+                - replace: 
+                    pattern: |
+                        Email:\s*async\s*\(\)\s*=>\s*\(await import\(['"]\.\/components\/[Rr]ecommendations\/Email['"]\)\)\.Email[,]
+                    replacement: "\n"
+                - replace:
+                    pattern: |
+                        Email:\s*async\s*\(\)\s*=>\s*\(await import\s*\(['"]\.\/[Rr]ecommendations\/[eE]mail\/Email['"]\)\)\.Email[,]
+                    replacement: "\n"
+                - replace:
+                    pattern: |
+                        Email:\s*async\s*\(\)\s*=>\s*{\s*return\s*\(await\s*import\(['"]\.\/components\/[Rr]ecommendations\/Email['"]\)\)\.Email[;]?\s*}[,]
+                    replacement: "\n"
+
+
+                    
