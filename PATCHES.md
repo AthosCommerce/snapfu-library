@@ -1,5 +1,5 @@
 # Snapfu Patches
-This repository contains patch files utilized by Snapfu to update Snap projects. Patch files are ordered by framework and version and currently only support application within a Unix enviroment.
+This repository contains patch files utilized by Snapfu to update Snap projects. Patch files are ordered by organization, framework and version and currently only support application within a Unix enviroment.
 
 Patch versions are automatically created when a new version of Snap is released - this is done within the Snap monorepo repository.
 
@@ -21,4 +21,4 @@ To learn more about the available options please see the [patch file options](./
 ## Development
 The easiest way to develop and test patches is to do so with `Snapfu`. This process is also the easiest way to develop `Snapfu` with new patch file functionality.
 
-Make sure you have `Snapfu` installed and then run `snapfu patch fetch`. The patches repository will be cloned into the current users home directory in `~/.searchspring/snapfu-patches`. From here, checkout a new branch, and proceed do patch development or experimentation. All `snapfu` `patch` commands will now utilize the branch you are modifying allowing you to apply local patch files to local projects.
+Make sure you have `Snapfu` installed and then run `snapfu patch fetch`. The patches repository will be cloned into the current users home directory in `~/.athoscommerce/snapfu-library`. From here, checkout a new branch, and proceed do patch development or experimentation. All `snapfu` `patch` commands will now utilize the branch you are modifying allowing you to apply local patch files to local projects.

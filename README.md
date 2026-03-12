@@ -8,8 +8,7 @@ https://www.npmjs.com/package/snapfu
 Snapfu will read the contents of framework directory utilized by the project (eg. `preact`) to make a listing of available components to use for the various features it provides. For example, when using `snapfu recs init` on a preact project, the components found within the library (`./preact/components/recommendation`) will be available as options when initializing. Note: when `snapfu` copies the component files over, it will rename any files found to match the template name.
 
 ## Patches
-Patches are currently pulled from the patches repository, but this will be pulled into the library soon!
-https://github.com/searchspring/snapfu-patches
+See [PATCHES.md](./PATCHES.md) file for documentation.
 
 ## Development
 The easiest way to develop and test the library is to do so with `snapfu`. This process is also the easiest way to develop `snapfu` with new component and patch file functionality.

@@ -1,0 +1,11 @@
+version: 0.75.0
+description: 'adjust github action for future updates'
+
+steps:
+    - files:
+        .github/workflows/deploy.yml:
+            action: edit-yaml
+            changes:
+                - update:
+                    path: ['jobs', 'Publish', 'runs-on']
+                    value: ${{ (startsWith(github.head_ref, 'updater/patch/') || startsWith(github.ref_name, 'updater/patch/') || startsWith(github.head_ref, 'updater/revert/') || startsWith(github.ref_name, 'updater/revert/') || (github.ref_name == github.event.repository.master_branch && (contains(github.event.head_commit.message,'from snap-implementations/updater/patch/') || contains(github.event.head_commit.message,'from snap-implementations/updater/revert/')))) && 'snapp-updater' || 'ubuntu-latest' }}
