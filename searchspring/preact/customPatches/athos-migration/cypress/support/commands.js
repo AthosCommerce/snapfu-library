@@ -1,0 +1,100 @@
+// DO NOT EDIT - THIS FILE CAN/WILL BE REPLACED!!!
+// ***********************************************
+// Custom Snap Cypress Commands
+//
+// For more comprehensive examples:
+// https://on.cypress.io/custom-commands
+// ***********************************************
+
+import packageJSON from '../../../package.json';
+
+Cypress.Commands.add('addScript', (script) => {
+	cy.document().then((doc) => {
+		const scriptElem = document.createElement('script');
+		scriptElem.type = 'text/javascript';
+		scriptElem.src = script;
+		doc.head.appendChild(scriptElem);
+	});
+});
+
+Cypress.Commands.add('addScripts', (scripts = []) => {
+	scripts = typeof scripts === 'string' ? [scripts] : scripts;
+
+	if (!scripts.length) return;
+
+	scripts.forEach((script) => {
+		cy.addScript(script);
+	});
+});
+
+Cypress.Commands.add('addLocalSnap', () => {
+	cy.window().then((window) => {
+		if (!window?.athos) {
+			cy.addScript('https://localhost:3333/bundle.js');
+		}
+	});
+});
+
+Cypress.Commands.add('snapController', (controllerId = 'search', options) => {
+	const defaultOptions = {
+		delay: 300,
+	};
+
+	const mergedOptions = { ...defaultOptions, ...options };
+	cy.wait(mergedOptions.delay);
+
+	return cy.window().then((window) => {
+		return new Cypress.Promise((resolve) => {
+			const checkTimeout = 150;
+			const interval = setInterval(() => {
+				if (window.athos?.controller && window.athos.controller[controllerId]) {
+					if (!window.athos.controller[controllerId].store.loading) {
+						clearInterval(interval);
+						resolve(window.athos.controller[controllerId]);
+					}
+				}
+			}, checkTimeout);
+		});
+	});
+});
+
+Cypress.Commands.add('waitForBundle', () => {
+	cy.window().then((window) => {
+		return new Cypress.Promise((resolve) => {
+			const checkTimeout = 100;
+			let interval = setInterval(() => {
+				if (window.athos) {
+					clearInterval(interval);
+					resolve();
+				}
+			}, checkTimeout);
+		});
+	});
+});
+
+Cypress.Commands.add('waitForIdle', (options) => {
+	options = { timeout: 200, ...options };
+
+	return cy.window().then((window) => {
+		return new Cypress.Promise((resolve) => {
+			let timeout = setTimeout(resolve, options.timeout);
+
+			const observer = new window.PerformanceObserver(() => {
+				clearTimeout(timeout);
+				timeout = setTimeout(resolve, options.timeout);
+			});
+
+			observer.observe({ entryTypes: ['resource'] });
+		});
+	});
+});
+
+Cypress.Commands.overwrite('clear', (orig, element, text, options) => {
+	return new Cypress.Promise(async(resolve) => {
+		const cleared = await orig(element, text, options);
+
+		setTimeout(() => {
+			resolve(cleared);
+		}, 500);
+	});
+});
