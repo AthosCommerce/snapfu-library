@@ -65,3 +65,5 @@ steps:
                 - replace: 
                     pattern: window?.searchspring
                     replacement: window?.athos
+    - run: |
+        npm run clean
