@@ -35,7 +35,7 @@ steps:
                 - update:
                     properties: {
                         dependencies: {
-                            "@athoscommerce/snap-preact": "1.1.4",
+                            "@athoscommerce/snap-preact": "1.1.5",
                         },
                     }
                 - update:
@@ -67,3 +67,4 @@ steps:
                     replacement: window?.athos
     - run: |
         npm run clean
+        sh ./patch/manual-checks.sh
