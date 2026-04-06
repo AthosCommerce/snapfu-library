@@ -26,6 +26,12 @@ steps:
                     path: ['dependencies', '@searchspring/snap-preact']
                 - remove:
                     path: ['dependencies', '@searchspring/snap-preact-components']
+                - remove:
+                    path: ['dependencies', 'mobx-react']
+                - remove:
+                    path: ['dependencies', 'preact']
+                - remove:
+                    path: ['dependencies', 'mobx']
                 - update:
                     properties: {
                         dependencies: {
@@ -44,6 +50,12 @@ steps:
                 - replace: 
                     pattern: \@searchspring\/snap-
                     replacement: '@athoscommerce/snap-'
+                - replace: 
+                    pattern: \'mobx-react\'
+                    replacement: "'mobx-react-lite'"
+                - replace: 
+                    pattern: \"mobx-react\"
+                    replacement: "'mobx-react-lite'"
         '**/*.*':
             action: find-replace
             changes:
