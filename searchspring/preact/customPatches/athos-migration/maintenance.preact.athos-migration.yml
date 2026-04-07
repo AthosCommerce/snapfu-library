@@ -3,14 +3,14 @@ description: 'Migrates a Searchspring site to Athos Commerce'
 
 steps:
     - run: |
-        cp ./patch/deploy.yml ./.github/workflows/deploy.yml
+        mkdir -p ./.github/workflows && cp ./patch/deploy.yml ./.github/workflows/deploy.yml
         cp ./patch/babel.config.js ./babel.config.js
         cp ./patch/webpack.common.js ./webpack.common.js
         cp ./patch/webpack.dev.js ./webpack.dev.js
         cp ./patch/webpack.modern.js ./webpack.modern.js
         cp ./patch/webpack.universal.js ./webpack.universal.js
-        cp ./patch/cypress/support/commands.js ./tests/cypress/support/commands.js
-        cp ./patch/cypress/support/e2e.js ./tests/cypress/support/e2e.js
+        mkdir -p ./tests/cypress/support && cp ./patch/cypress/support/commands.js ./tests/cypress/support/commands.js
+        mkdir -p ./tests/cypress/support && cp ./patch/cypress/support/e2e.js ./tests/cypress/support/e2e.js
     - files:
         package.json:
             action: find-replace
