@@ -1,0 +1,70 @@
+version: athos-migration
+description: 'Migrates a Searchspring site to Athos Commerce'
+
+steps:
+    - run: |
+        mkdir -p ./.github/workflows && cp ./patch/deploy.yml ./.github/workflows/deploy.yml
+        cp ./patch/babel.config.js ./babel.config.js
+        cp ./patch/webpack.common.js ./webpack.common.js
+        cp ./patch/webpack.dev.js ./webpack.dev.js
+        cp ./patch/webpack.modern.js ./webpack.modern.js
+        cp ./patch/webpack.universal.js ./webpack.universal.js
+        mkdir -p ./tests/cypress/support && cp ./patch/cypress/support/commands.js ./tests/cypress/support/commands.js
+        mkdir -p ./tests/cypress/support && cp ./patch/cypress/support/e2e.js ./tests/cypress/support/e2e.js
+    - files:
+        package.json:
+            action: find-replace
+            changes:
+                - replace: 
+                    pattern: '"searchspring": {'
+                    replacement: '"athos": {'
+    - files:
+        package.json:
+            action: edit-json
+            changes:
+                - remove:
+                    path: ['dependencies', '@searchspring/snap-preact']
+                - remove:
+                    path: ['dependencies', '@searchspring/snap-preact-components']
+                - remove:
+                    path: ['dependencies', 'mobx-react']
+                - remove:
+                    path: ['dependencies', 'preact']
+                - remove:
+                    path: ['dependencies', 'mobx']
+                - update:
+                    properties: {
+                        dependencies: {
+                            "@athoscommerce/snap-preact": "1.1.5",
+                        },
+                    }
+                - update:
+                    path: ['athos', 'version']
+                    value: '1.1.4'
+        src/**:
+            action: find-replace
+            changes:
+                - replace: 
+                    pattern: \@searchspring\/snap-preact-components
+                    replacement: '@athoscommerce/snap-preact/components'
+                - replace: 
+                    pattern: \@searchspring\/snap-
+                    replacement: '@athoscommerce/snap-'
+                - replace: 
+                    pattern: \'mobx-react\'
+                    replacement: "'mobx-react-lite'"
+                - replace: 
+                    pattern: \"mobx-react\"
+                    replacement: "'mobx-react-lite'"
+        '**/*.*':
+            action: find-replace
+            changes:
+                - replace: 
+                    pattern: window.searchspring
+                    replacement: window.athos
+                - replace: 
+                    pattern: window?.searchspring
+                    replacement: window?.athos
+    - run: |
+        npm run clean
+        sh ./patch/manual-checks.sh
