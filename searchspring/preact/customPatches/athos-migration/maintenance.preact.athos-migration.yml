@@ -67,4 +67,4 @@ steps:
                     replacement: window?.athos
     - run: |
         npm run clean
-        sh ./patch/manual-checks.sh
+        sh ./patch/file-checks.sh
