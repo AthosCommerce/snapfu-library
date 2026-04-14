@@ -26,8 +26,9 @@ section() {
 }
 
 # Find all files in ./src with afterSearch or afterStore middleware
-# Matches both controller.on('afterSearch', ...) and config middleware: { afterSearch: ... } patterns
-middleware_files=$(grep -r -l -E "(\.on\('(afterSearch|afterStore)'|(afterSearch|afterStore)[[:space:]]*:)" ./src 2>/dev/null)
+# Matches controller.on('afterSearch', ...), controller.on("afterSearch", ...), controller.on( 'afterSearch', ...)
+# and config middleware: { afterSearch: ... } patterns
+middleware_files=$(grep -r -l -E "(\.on\([[:space:]]*['\"]((afterSearch|afterStore))['\"]|(afterSearch|afterStore)[[:space:]]*:)" ./src 2>/dev/null)
 
 # For each file, output "file:linenum:content" for every middleware declaration whose callback
 # scope (brace-tracked) contains 'response' in code (not in // comments). This serves both
@@ -38,7 +39,7 @@ find_response_middleware_lines() {
     {
         line = $0
         if (!in_block) {
-            if (line ~ /\.on\('"'"'(afterSearch|afterStore)'"'"'|(afterSearch|afterStore)[[:space:]]*:/) {
+            if (line ~ /\.on\([[:space:]]*['"'"'"]((afterSearch|afterStore))['"'"'"]|(afterSearch|afterStore)[[:space:]]*:/) {
                 in_block = 1; entered = 0; depth = 0; block_code = ""
                 decl_linenum = NR; decl_line = line
             } else {
@@ -76,6 +77,54 @@ find_response_middleware_lines() {
     ' "$1"
 }
 
+# For a referenced function name, check whether response is used within its body.
+# Uses the same brace-tracking / comment-stripping logic as find_response_middleware_lines
+# to avoid false positives from unrelated response usage elsewhere in the same file.
+find_response_in_fn() {
+    local fname="$1"
+    local file="$2"
+    awk -v fname="$fname" '
+    BEGIN { in_block = 0; depth = 0; entered = 0; block_code = ""; in_comment = 0 }
+    {
+        line = $0
+        if (!in_block) {
+            if (line ~ ("(^|[^a-zA-Z0-9_])function[[:space:]]+" fname "[[:space:]]*\\(") ||
+                line ~ ("[^a-zA-Z0-9_]" fname "[[:space:]]*=[[:space:]]*(async[[:space:]]*)?(function([^[:alnum:]_]|$)|\\()") ||
+                line ~ ("^" fname "[[:space:]]*=[[:space:]]*(async[[:space:]]*)?(function([^[:alnum:]_]|$)|\\()")) {
+                in_block = 1; entered = 0; depth = 0; block_code = ""
+            } else {
+                next
+            }
+        }
+        stripped = line
+        if (in_comment) {
+            if ((pos = index(stripped, "*/")) > 0) { stripped = substr(stripped, pos + 2); in_comment = 0 }
+            else { stripped = "" }
+        }
+        while (!in_comment && (pos = index(stripped, "/*")) > 0) {
+            before = substr(stripped, 1, pos - 1)
+            rest = substr(stripped, pos + 2)
+            if ((endpos = index(rest, "*/")) > 0) { stripped = before substr(rest, endpos + 2) }
+            else { stripped = before; in_comment = 1 }
+        }
+        if (!in_comment && match(stripped, /\/\//)) { stripped = substr(stripped, 1, RSTART - 1) }
+        block_code = block_code stripped "\n"
+        tmp = line; open = 0
+        while ((idx = index(tmp, "{")) > 0) { open++; tmp = substr(tmp, idx + 1) }
+        tmp = line; close_n = 0
+        while ((idx = index(tmp, "}")) > 0) { close_n++; tmp = substr(tmp, idx + 1) }
+        if (open > 0) entered = 1
+        depth += open - close_n
+        if (entered && depth <= 0) {
+            if (block_code ~ /(^|[^[:alnum:]_])response([^[:alnum:]_]|$)/) {
+                print "found"
+            }
+            exit
+        }
+    }
+    ' "$file"
+}
+
 found_inline=""
 found_inline_lines=""
 while IFS= read -r file; do
@@ -92,7 +141,7 @@ done <<< "$middleware_files"
 # Handles direct references (afterSearch: myFn) and array references (afterSearch: [myFn, myFn2]).
 ref_names=$(grep -r -h -E "(afterSearch|afterStore)[[:space:]]*:" ./src 2>/dev/null \
     | grep -E -v "^[[:space:]]*//" \
-    | grep -E -v "(afterSearch|afterStore)[[:space:]]*:[[:space:]]*(async\b|function\b|\()" \
+    | grep -E -v "(afterSearch|afterStore)[[:space:]]*:[[:space:]]*(async([^[:alnum:]_]|$)|function([^[:alnum:]_]|$)|\()" \
     | grep -E -o "(afterSearch|afterStore)[[:space:]]*:[[:space:]]*\[?[a-zA-Z_][a-zA-Z0-9_,[:space:]]*" \
     | sed "s/.*:[[:space:]]*//" \
     | tr -d '[]' \
@@ -110,13 +159,9 @@ while IFS= read -r name; do
     while IFS= read -r f; do
         [ -z "$f" ] && continue
         # Skip files already flagged by inline check
-        case "$found_inline" in *"$f"*) continue ;; esac
-        # Check the file defines the function
-        if ! grep -q -E "(function[[:space:]]+${name}[[:space:]]*\(|[^a-zA-Z0-9_]${name}[[:space:]]*=[[:space:]]*(async[[:space:]]*)?(function\b|\())" "$f" 2>/dev/null; then
-            continue
-        fi
-        # Check the file uses response as destructured variable or property access
-        if grep -q -E "(\{[^}]*\bresponse\b|\.response\b)" "$f"; then
+        printf "%s\n" "$found_inline" | grep -Fxq "$f" && continue
+        # Check if the function's body (brace-scoped) contains response usage
+        if [ -n "$(find_response_in_fn "$name" "$f")" ]; then
             found_refs="${found_refs}${f}"$'\n'
         fi
     done <<< "$all_js_files"
@@ -134,7 +179,7 @@ if [ -n "$found_inline" ] || [ -n "$found_refs" ]; then
     # For referenced functions: show the response usage lines in the function definition file
     while IFS= read -r file; do
         [ -z "$file" ] && continue
-        grep -H -n -E "(\{[^}]*\bresponse\b|\.response\b)" "$file"
+        grep -H -n -E "(\{response([^[:alnum:]_]|$)|\{[^}]*[^[:alnum:]_]response([^[:alnum:]_]|$)|\.response([^[:alnum:]_]|$))" "$file"
     done <<< "$found_refs"
 fi
 
@@ -177,4 +222,4 @@ else
     printf "${CYAN}${local_bar}${RESET}\n"
 fi
 
-printf "\n  For more information:\n  ${CYAN}https://athoscommerce.github.io/snap/reference-migration${RESET}\n\n"
+printf "\nFor more information:\n${CYAN}https://athoscommerce.github.io/snap/reference-migration${RESET}\n"
