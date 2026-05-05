@@ -30,7 +30,6 @@ module.exports = merge(common, {
 				use: {
 					loader: 'babel-loader',
 					options: {
-						sourceType: 'unambiguous',
 						presets: [
 							[
 								'@babel/preset-env',
