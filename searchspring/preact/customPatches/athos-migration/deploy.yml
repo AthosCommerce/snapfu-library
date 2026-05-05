@@ -15,8 +15,8 @@ jobs:
       - name: Checkout action
         uses: actions/checkout@v2
         with:
-          repository: athoscommerce/snap-action
-      - name: Run athoscommerce/snap-action
+          repository: searchspring/snap-action
+      - name: Run searchspring/snap-action
         uses: ./
         with:
           # required
