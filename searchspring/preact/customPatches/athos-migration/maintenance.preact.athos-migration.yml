@@ -35,7 +35,7 @@ steps:
                 - update:
                     properties: {
                         dependencies: {
-                            "@athoscommerce/snap-preact": "1.4.0",
+                            "@athoscommerce/snap-preact": "1.5.1",
                             "mobx": "6.15.1",
                             "mobx-react-lite": "4.1.1",
                             "preact": "10.28.4"
@@ -43,7 +43,7 @@ steps:
                     }
                 - update:
                     path: ['athos', 'version']
-                    value: '1.4.0'
+                    value: '1.5.1'
         src/**:
             action: find-replace
             changes:
