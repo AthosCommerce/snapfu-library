@@ -6,6 +6,10 @@ on:
     branches:
       - '**'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   Publish:
     runs-on: ${{ (startsWith(github.head_ref, 'updater/patch/') || startsWith(github.ref_name, 'updater/patch/') || startsWith(github.head_ref, 'updater/revert/') || startsWith(github.ref_name, 'updater/revert/') || (github.ref_name == github.event.repository.master_branch && (contains(github.event.head_commit.message,'from snap-implementations/updater/patch/') || contains(github.event.head_commit.message,'from snap-implementations/updater/revert/')))) && 'snapp-updater' || 'ubuntu-latest' }}
@@ -13,10 +17,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout action
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
         with:
-          repository: searchspring/snap-action
-      - name: Run searchspring/snap-action
+          repository: athoscommerce/snap-action
+      - name: Run athoscommerce/snap-action
         uses: ./
         with:
           # required
@@ -31,6 +35,3 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
           GITHUB_BOT_TOKEN: ${{ secrets.MACHINE_TOKEN }}
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
