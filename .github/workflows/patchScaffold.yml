@@ -8,6 +8,7 @@ on:
 
 jobs:
   scaffold-matrix:
+    if: github.event.pull_request.merged == true && startsWith( github.head_ref, 'patch-generate-' ) == true
     runs-on: ubuntu-latest
     steps:
       - id: scaffolds
@@ -52,16 +53,16 @@ jobs:
 
       - name: Setup Node
         id: setup-node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v6
         with:
-          node-version: 16
+          node-version: 24
 
       - name: Install Snapfu
         run: |
           npm install -g snapfu
 
       - name: Checkout Scaffold
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           repository: "athoscommerce/${{ matrix.scaffold }}"
           path: "${{ matrix.scaffold }}"
