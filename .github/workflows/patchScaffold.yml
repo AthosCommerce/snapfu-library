@@ -8,12 +8,12 @@ on:
 
 jobs:
   scaffold-matrix:
-    if: github.event.pull_request.merged == true && (startsWith( github.head_ref, 'athos-patch-generate-' ) || startsWith( github.head_ref, 'searchspring-patch-generate-' ))
+    if: github.event.pull_request.merged == true && (startsWith( github.head_ref, 'patch-generate-athos-' ) || startsWith( github.head_ref, 'patch-generate-searchspring-' ))
     runs-on: ubuntu-latest
     steps:
       - id: scaffolds
         run: |
-          source=`echo '${{ github.head_ref }}' | jq -Rr 'split("-")[0]'`;
+          source=`echo '${{ github.head_ref }}' | jq -Rr 'split("-")[2]'`;
           framework=`echo '${{ github.head_ref }}' | jq -Rr 'split("-")[3]'`;
 
           if [ "$source" == "athos" ]; then
@@ -36,7 +36,7 @@ jobs:
       owner: ${{ steps.scaffolds.outputs.owner }}
       scaffolds: ${{ steps.scaffolds.outputs.scaffolds }}
   patch-scaffold:
-    if: github.event.pull_request.merged == true && (startsWith( github.head_ref, 'athos-patch-generate-' ) || startsWith( github.head_ref, 'searchspring-patch-generate-' )) && needs.scaffold-matrix.outputs.scaffolds != '[]'
+    if: github.event.pull_request.merged == true && (startsWith( github.head_ref, 'patch-generate-athos-' ) || startsWith( github.head_ref, 'patch-generate-searchspring-' )) && needs.scaffold-matrix.outputs.scaffolds != '[]'
     runs-on: ubuntu-latest
     needs:
       - scaffold-matrix
@@ -47,7 +47,7 @@ jobs:
       - name: Extract Variables
         id: variables
         run: |
-          source=`echo '${{ github.head_ref }}' | jq -Rr 'split("-")[0]'`;
+          source=`echo '${{ github.head_ref }}' | jq -Rr 'split("-")[2]'`;
           echo "source=$source" >> $GITHUB_OUTPUT
           echo "Using source: $source";
 
