@@ -112,7 +112,6 @@ jobs:
             --repo "https://github.com/${{ needs.scaffold-matrix.outputs.owner }}/${{ matrix.scaffold }}" \
             --base "production" \
             --head "patch-${{ matrix.scaffold }}-${{ steps.variables.outputs.version }}" \
-            --project "Snap" \
             --reviewer "${{ needs.scaffold-matrix.outputs.owner }}/snap-team"
         env:
           GITHUB_TOKEN: ${{ secrets.MACHINE_ACTION_WORKFLOW_PAT }}
