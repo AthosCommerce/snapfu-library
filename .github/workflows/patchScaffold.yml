@@ -8,20 +8,35 @@ on:
 
 jobs:
   scaffold-matrix:
-    if: github.event.pull_request.merged == true && startsWith( github.head_ref, 'patch-generate-' ) == true
+    if: github.event.pull_request.merged == true && (startsWith( github.head_ref, 'athos-patch-generate-' ) || startsWith( github.head_ref, 'searchspring-patch-generate-' ))
     runs-on: ubuntu-latest
     steps:
       - id: scaffolds
         run: |
-          framework=`echo '${{ github.head_ref }}' | jq -Rr 'split("-")[2]'`;
-          scaffolds=$(gh search repos --owner athoscommerce "snapfu-scaffold-$framework" --json name --jq '[.[].name]')
+          source=`echo '${{ github.head_ref }}' | jq -Rr 'split("-")[0]'`;
+          framework=`echo '${{ github.head_ref }}' | jq -Rr 'split("-")[3]'`;
+
+          if [ "$source" == "athos" ]; then
+            owner="athoscommerce"
+          elif [ "$source" == "searchspring" ]; then
+            owner="searchspring"
+          else
+            echo "Unknown source: $source"
+            exit 1
+          fi
+
+          scaffolds=$(gh search repos --owner "$owner" "snapfu-scaffold-$framework" --json name --jq '[.[].name]')
+          echo "source=$source" >> $GITHUB_OUTPUT
+          echo "owner=$owner" >> $GITHUB_OUTPUT
           echo "scaffolds=$scaffolds" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.MACHINE_ACTION_WORKFLOW_PAT }}
     outputs:
+      source: ${{ steps.scaffolds.outputs.source }}
+      owner: ${{ steps.scaffolds.outputs.owner }}
       scaffolds: ${{ steps.scaffolds.outputs.scaffolds }}
   patch-scaffold:
-    if: github.event.pull_request.merged == true && startsWith( github.head_ref, 'patch-generate-' ) == true && needs.scaffold-matrix.outputs.scaffolds != '[]'
+    if: github.event.pull_request.merged == true && (startsWith( github.head_ref, 'athos-patch-generate-' ) || startsWith( github.head_ref, 'searchspring-patch-generate-' )) && needs.scaffold-matrix.outputs.scaffolds != '[]'
     runs-on: ubuntu-latest
     needs:
       - scaffold-matrix
@@ -32,16 +47,24 @@ jobs:
       - name: Extract Variables
         id: variables
         run: |
-          framework=`echo '${{ github.head_ref }}' | jq -Rr 'split("-")[2]'`;
-          echo "::set-output name=framework::$framework";
+          source=`echo '${{ github.head_ref }}' | jq -Rr 'split("-")[0]'`;
+          echo "source=$source" >> $GITHUB_OUTPUT
+          echo "Using source: $source";
+
+          framework=`echo '${{ github.head_ref }}' | jq -Rr 'split("-")[3]'`;
+          echo "framework=$framework" >> $GITHUB_OUTPUT
           echo "Using framework: $framework";
 
-          version=`echo '${{ github.head_ref }}' | jq -Rr 'split("-")[3]'`;
-          echo "::set-output name=version::$version";
+          version=`echo '${{ github.head_ref }}' | jq -Rr 'split("-")[4]'`;
+          echo "version=$version" >> $GITHUB_OUTPUT
           echo "Using version: $version";
 
       - name: Validate Variables
         run: |
+          if [ "${{ steps.variables.outputs.source }}" == "" ]; then 
+            echo "Could not determine source";
+            exit 1;
+          fi;
           if [ "${{ steps.variables.outputs.framework }}" == "" ]; then 
             echo "Could not determine framework";
             exit 1;
@@ -64,7 +87,7 @@ jobs:
       - name: Checkout Scaffold
         uses: actions/checkout@v6
         with:
-          repository: "athoscommerce/${{ matrix.scaffold }}"
+          repository: "${{ needs.scaffold-matrix.outputs.owner }}/${{ matrix.scaffold }}"
           path: "${{ matrix.scaffold }}"
           ref: "production"
           token: ${{ secrets.MACHINE_ACTION_WORKFLOW_PAT }}
@@ -86,10 +109,10 @@ jobs:
           gh pr create \
             --title "Patch Scaffold ${{ matrix.scaffold }} to ${{ steps.variables.outputs.version }}" \
             --body "" \
-            --repo "https://github.com/athoscommerce/${{ matrix.scaffold }}" \
+            --repo "https://github.com/${{ needs.scaffold-matrix.outputs.owner }}/${{ matrix.scaffold }}" \
             --base "production" \
             --head "patch-${{ matrix.scaffold }}-${{ steps.variables.outputs.version }}" \
             --project "Snap" \
-            --reviewer "athoscommerce/snap-team"
+            --reviewer "${{ needs.scaffold-matrix.outputs.owner }}/snap-team"
         env:
           GITHUB_TOKEN: ${{ secrets.MACHINE_ACTION_WORKFLOW_PAT }}
