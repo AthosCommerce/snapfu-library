@@ -81,8 +81,20 @@ jobs:
           node-version: 24
 
       - name: Install Snapfu
+        id: snapfu
         run: |
-          npm install -g snapfu
+          npm install -g snapfu@latest
+
+          installed=$(node -p "require('$(npm root -g)/snapfu/package.json').version")
+          latest=$(npm view snapfu version)
+
+          echo "version=$installed" >> $GITHUB_OUTPUT
+          echo "Using snapfu: $installed (latest published: $latest)"
+          echo "**snapfu version:** \`$installed\` (latest published: \`$latest\`)" >> $GITHUB_STEP_SUMMARY
+
+          if [ "$installed" != "$latest" ]; then
+            echo "::warning::Installed snapfu ($installed) is not the latest published version ($latest)"
+          fi
 
       - name: Checkout Scaffold
         uses: actions/checkout@v6
@@ -98,7 +110,7 @@ jobs:
           git config --global user.name "athos-machine"
           git config --global user.email "machine@athoscommerce.com"
           git checkout -b patch-${{ matrix.scaffold }}-${{ steps.variables.outputs.version }}
-          snapfu patch fetch
+          snapfu patch fetch --scaffold
           snapfu patch apply ${{ steps.variables.outputs.version }} --ci --scaffold
           git add .
           git commit -m "auto generated scaffolding patch from 'Patch Scaffold' action workflow"
