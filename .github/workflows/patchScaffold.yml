@@ -99,11 +99,11 @@ jobs:
           git config --global user.email "machine@athoscommerce.com"
           git checkout -b patch-${{ matrix.scaffold }}-${{ steps.variables.outputs.version }}
           snapfu patch fetch
-          snapfu patch apply ${{ steps.variables.outputs.version }} --ci
+          snapfu patch apply ${{ steps.variables.outputs.version }} --ci --scaffold
           git add .
           git commit -m "auto generated scaffolding patch from 'Patch Scaffold' action workflow"
           git push -u origin patch-${{ matrix.scaffold }}-${{ steps.variables.outputs.version }}
- 
+
       - name: Create PR
         run: |
           gh pr create \
