@@ -1,5 +1,5 @@
 version: 1.9.1
-description: 'athos release 1.9.1'
+description: 'release 1.9.1'
 
 steps:
     - files:
