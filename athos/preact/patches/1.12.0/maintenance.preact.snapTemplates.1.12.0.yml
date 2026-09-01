@@ -1,0 +1,19 @@
+version: 1.12.0
+description: 'use packaged ESLint plugin from @athoscommerce/snap-preact and remove local eslint-rules'
+
+steps:
+    # copy in eslint.config.js if the project does not have one
+    - run: |
+            [ -f ./eslint.config.js ] || cp ./patch/templates/eslint.config.js ./eslint.config.js
+
+    - files:
+        'eslint.config.js':
+            action: find-replace
+            changes:
+                - replace:
+                      pattern: require\((['"])\.\/eslint-rules(\/index\.cjs)?\1\)
+                      replacement: require('@athoscommerce/snap-preact/eslintplugin')
+
+    # remove local eslint-rules plugin (now provided by @athoscommerce/snap-preact)
+    - run: |
+            rm -rf ./eslint-rules

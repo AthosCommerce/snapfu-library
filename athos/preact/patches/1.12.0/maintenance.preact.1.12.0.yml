@@ -1,0 +1,18 @@
+version: 1.12.0
+description: 'use kill-port in dev script to support Windows'
+
+steps:
+    - files:
+        package.json:
+            action: edit-json
+            changes:
+                - update:
+                    properties:
+                        "scripts": {
+                            "dev": "kill-port 3333 && webpack serve --config webpack.dev.js"
+                        }
+                - update:
+                    properties:
+                        "devDependencies": {
+                            "kill-port": "^2.0.1"
+                        }
