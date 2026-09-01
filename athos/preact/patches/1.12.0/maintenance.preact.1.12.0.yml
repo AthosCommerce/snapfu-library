@@ -16,3 +16,12 @@ steps:
                         "devDependencies": {
                             "kill-port": "^2.0.1"
                         }
+
+    # replace lsof usage in the test script (if it exists) with kill-port
+    - files:
+        package.json:
+            action: find-replace
+            changes:
+                - replace:
+                      pattern: 'kill \$\(lsof -ti:3333,8888\); webpack serve --config webpack\.dev\.js & \(\(cypress run --project tests \|\| cypress run --project tests\) && kill \$\(lsof -ti:3333,8888\)\)'
+                      replacement: 'kill-port 3333 8888 && webpack serve --config webpack.dev.js & ((cypress run --project tests || cypress run --project tests) && kill-port 3333 8888)'
