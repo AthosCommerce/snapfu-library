@@ -1,0 +1,7 @@
+version: 1.13.1
+description: 'Copy new webpack dev file that exclude universal export'
+
+steps:
+    - run: |
+        cp ./patch/snapTemplates/webpack.dev.js ./webpack.dev.js
+        cp ./patch/snapTemplates/eslint.config.js ./eslint.config.js
