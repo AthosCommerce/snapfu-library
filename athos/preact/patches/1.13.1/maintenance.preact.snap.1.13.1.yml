@@ -1,0 +1,15 @@
+version: 1.13.1
+description: 'use kill-the-port in test script to support Windows'
+
+steps:
+    - run: |
+        cp ./patch/snap/webpack.dev.js ./webpack.dev.js
+    - files:
+        package.json:
+            action: edit-json
+            changes:
+                - update:
+                    properties:
+                        "scripts": {
+                            "test": "kill-the-port 3333 8888 && webpack serve --config webpack.dev.js & ((cypress run --project tests || cypress run --project tests) && kill-the-port 3333 8888)"
+                        }
