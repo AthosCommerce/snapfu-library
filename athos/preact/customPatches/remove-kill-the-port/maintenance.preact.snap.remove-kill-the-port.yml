@@ -1,9 +1,7 @@
-version: 1.13.1
-description: 'copy new webpack dev file, replace test script with concurrently and wait-on'
+version: remove-kill-the-port
+description: 'replace kill-the-port in the test script with concurrently and wait-on'
 
 steps:
-    - run: |
-        cp ./patch/snap/webpack.dev.js ./webpack.dev.js
     - files:
         package.json:
             action: edit-json

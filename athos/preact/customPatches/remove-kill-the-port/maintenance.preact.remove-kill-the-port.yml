@@ -1,5 +1,5 @@
-version: 1.13.1
-description: 'remove kill-port from the dev script and devDependencies'
+version: remove-kill-the-port
+description: 'remove kill-the-port / kill-port from the dev script and devDependencies'
 
 steps:
     - files:
@@ -11,5 +11,7 @@ steps:
                         "scripts": {
                             "dev": "webpack serve --config webpack.dev.js"
                         }
+                - remove:
+                    path: ['devDependencies', 'kill-the-port']
                 - remove:
                     path: ['devDependencies', 'kill-port']
