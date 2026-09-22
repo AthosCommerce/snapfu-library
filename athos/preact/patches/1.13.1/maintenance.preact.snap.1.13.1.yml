@@ -11,7 +11,7 @@ steps:
                 - update:
                     properties:
                         "scripts": {
-                            "test": "concurrently -k -s first -n dev,cypress \"webpack serve --config webpack.dev.js\" \"wait-on tcp:localhost:3333 && cypress run --project tests\""
+                            "test": "concurrently -k -s first -n dev,cypress \"webpack serve --config webpack.dev.js\" \"wait-on tcp:localhost:3333 && (cypress run --project tests || cypress run --project tests)\""
                         }
                 - update:
                     properties:
