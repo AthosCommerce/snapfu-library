@@ -1,0 +1,19 @@
+version: remove-kill-the-port
+description: 'replace kill-the-port in the test script with concurrently and wait-on'
+
+steps:
+    - files:
+        package.json:
+            action: edit-json
+            changes:
+                - update:
+                    properties:
+                        "scripts": {
+                            "test": "concurrently -k -s first -n dev,cypress \"webpack serve --config webpack.dev.js\" \"wait-on tcp:localhost:3333 && cypress run --project tests\""
+                        }
+                - update:
+                    properties:
+                        "devDependencies": {
+                            "concurrently": "^9.2.4",
+                            "wait-on": "^8.0.5"
+                        }

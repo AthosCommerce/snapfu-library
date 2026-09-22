@@ -1,0 +1,17 @@
+version: remove-kill-the-port
+description: 'remove kill-the-port / kill-port from the dev script and devDependencies'
+
+steps:
+    - files:
+        package.json:
+            action: edit-json
+            changes:
+                - update:
+                    properties:
+                        "scripts": {
+                            "dev": "webpack serve --config webpack.dev.js"
+                        }
+                - remove:
+                    path: ['devDependencies', 'kill-the-port']
+                - remove:
+                    path: ['devDependencies', 'kill-port']
