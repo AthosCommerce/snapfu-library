@@ -1,5 +1,5 @@
 version: 1.13.1
-description: 'use kill-the-port in dev script to support Windows'
+description: 'remove kill-port from the dev script and devDependencies'
 
 steps:
     - files:
@@ -9,13 +9,7 @@ steps:
                 - update:
                     properties:
                         "scripts": {
-                            "dev": "kill-the-port 3333 && webpack serve --config webpack.dev.js"
-                        }
-                - update:
-                    properties:
-                        "devDependencies": {
-                            "kill-the-port": "0.1.3"
+                            "dev": "webpack serve --config webpack.dev.js"
                         }
                 - remove:
                     path: ['devDependencies', 'kill-port']
-

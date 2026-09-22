@@ -1,5 +1,5 @@
 version: 1.13.1
-description: 'use kill-the-port in test script to support Windows'
+description: 'copy new webpack dev file, replace test script with concurrently and wait-on'
 
 steps:
     - run: |
@@ -11,5 +11,11 @@ steps:
                 - update:
                     properties:
                         "scripts": {
-                            "test": "kill-the-port 3333 8888 && webpack serve --config webpack.dev.js & ((cypress run --project tests || cypress run --project tests) && kill-the-port 3333 8888)"
+                            "test": "concurrently -k -s first -n dev,cypress \"webpack serve --config webpack.dev.js\" \"wait-on tcp:localhost:3333 && cypress run --project tests\""
+                        }
+                - update:
+                    properties:
+                        "devDependencies": {
+                            "concurrently": "^9.2.4",
+                            "wait-on": "^8.0.5"
                         }
