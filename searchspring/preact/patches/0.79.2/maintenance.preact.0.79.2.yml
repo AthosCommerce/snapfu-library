@@ -1,5 +1,5 @@
 version: 0.79.2
-description: 'update mobx to match the version used by snap'
+description: 'update mobx to match the version used by snap and pin devDependencies to exact versions'
 
 steps:
     - files:
@@ -10,4 +10,40 @@ steps:
                     properties:
                         "dependencies": {
                             "mobx": "6.16.1"
+                        }
+                # pin devDependencies to exact versions (latest within the previously allowed ranges)
+                - update:
+                    properties:
+                        "devDependencies": {
+                            "@babel/core": "7.29.13",
+                            "@babel/eslint-parser": "7.29.13",
+                            "@babel/plugin-proposal-class-properties": "7.18.6",
+                            "@babel/plugin-proposal-decorators": "7.29.7",
+                            "@babel/plugin-transform-react-jsx": "7.29.7",
+                            "@babel/plugin-transform-runtime": "7.29.7",
+                            "@babel/preset-env": "7.29.7",
+                            "@babel/preset-react": "7.29.7",
+                            "@babel/runtime": "7.29.13",
+                            "@lhci/cli": "0.14.0",
+                            "@searchspring/browserslist-config-snap": "1.0.7",
+                            "@searchspring/prettier": "1.0.2",
+                            "babel-loader": "9.2.1",
+                            "core-js": "3.51.0",
+                            "css-loader": "6.11.0",
+                            "cypress": "13.17.0",
+                            "cypress-fail-fast": "7.1.1",
+                            "eslint": "8.57.1",
+                            "eslint-plugin-react": "7.37.5",
+                            "file-loader": "6.2.0",
+                            "husky": "8.0.3",
+                            "lint-staged": "13.3.0",
+                            "prettier": "2.8.8",
+                            "sass": "1.78.0",
+                            "sass-loader": "13.3.3",
+                            "style-loader": "3.3.4",
+                            "webpack": "5.112.2",
+                            "webpack-bundle-analyzer": "4.10.2",
+                            "webpack-cli": "5.1.4",
+                            "webpack-dev-server": "4.15.2",
+                            "webpack-merge": "5.10.0"
                         }
