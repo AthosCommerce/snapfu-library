@@ -1,0 +1,13 @@
+version: 0.79.2
+description: 'update mobx to match the version used by snap'
+
+steps:
+    - files:
+        package.json:
+            action: edit-json
+            changes:
+                - update:
+                    properties:
+                        "dependencies": {
+                            "mobx": "6.16.1"
+                        }
