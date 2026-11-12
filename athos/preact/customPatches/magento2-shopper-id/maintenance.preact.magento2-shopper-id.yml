@@ -1,0 +1,42 @@
+version: magento2-shopper-id
+description: 'magento2 shopper id uses the tracking module customer id (hashed email or telephone fallback) instead of customer.data_id'
+
+steps:
+    - files:
+        'src/**/*.js':
+            action: find-replace
+            changes:
+                # magento2 plugin - `let shopperId = mageCacheStorage?.customer?.data_id ? mageCacheStorage.customer.data_id : false;`
+                # $1 is the line indentation, $2 is the existing falsy value (false or '')
+                - replace:
+                    pattern: |-
+                        ^([ \t]*)let shopperId = mageCacheStorage\?\.customer\?\.data_id \? mageCacheStorage\.customer\.data_id : (false|'');
+                    replacement: |-
+                        $1// shopper id is the Magento customer id provided by the tracking module (`customer.data_id` is a cache timestamp, not a shopper id)
+                        $1const mageShopperId = mageCacheStorage?.['searchspring-tracking']?.shopper_id || mageCacheStorage?.['athoscommerce-tracking']?.shopper_id;
+                        $1let shopperId = mageShopperId ? String(mageShopperId) : $2;
+
+                        $1// without a customer id, fall back to a SHA-256 hash of the customer email (or telephone when there is no email)
+                        $1if (!shopperId) {
+                        $1	const { email, telephone } = mageCacheStorage?.customer || {};
+                        $1	const mageEmail = String(email || '').trim();
+                        $1	const mageContact = mageEmail.toLowerCase() || String(telephone || '').replace(/\D/g, '');
+                        $1	if (mageContact && window.crypto?.subtle) {
+                        $1		window.crypto.subtle
+                        $1			.digest('SHA-256', new TextEncoder().encode(mageContact))
+                        $1			.then((digest) => {
+                        $1				const hashedId = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
+                        $1				controller.tracker.track.shopper.login({ id: hashedId });
+                        $1			})
+                        $1			.catch((err) => {
+                        $1				controller.log.warn('unable to hash magento2 shopper id', err);
+                        $1			});
+                        $1	}
+                        $1}
+                # shopper context - `id: mageCacheStorage?.customer?.data_id,` (customer id only, no hashed fallback)
+                - replace:
+                    pattern: |-
+                        ^([ \t]*)id: mageCacheStorage\?\.customer\?\.data_id,
+                    replacement: |-
+                        $1// shopper id is the Magento customer id provided by the tracking module (`customer.data_id` is a cache timestamp, not a shopper id)
+                        $1id: mageCacheStorage?.['searchspring-tracking']?.shopper_id || mageCacheStorage?.['athoscommerce-tracking']?.shopper_id,
