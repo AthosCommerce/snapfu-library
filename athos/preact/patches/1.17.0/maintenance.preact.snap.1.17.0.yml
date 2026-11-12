@@ -2,120 +2,44 @@ version: 1.17.0
 description: 'pin devDependencies to exact versions'
 
 steps:
-    # pin devDependencies to exact versions (latest within the major each project already uses)
-    # find-replace only touches packages a project already has - nothing is added and no major changes
     - files:
         package.json:
-            action: find-replace
+            action: edit-json
             changes:
-                - replace:
-                    pattern: '"@babel/core": "[\^~]?7\.[^"]*"'
-                    replacement: '"@babel/core": "7.29.13"'
-                - replace:
-                    pattern: '"@babel/eslint-parser": "[\^~]?7\.[^"]*"'
-                    replacement: '"@babel/eslint-parser": "7.29.13"'
-                - replace:
-                    pattern: '"@babel/plugin-proposal-class-properties": "[\^~]?7\.[^"]*"'
-                    replacement: '"@babel/plugin-proposal-class-properties": "7.18.6"'
-                - replace:
-                    pattern: '"@babel/plugin-proposal-decorators": "[\^~]?7\.[^"]*"'
-                    replacement: '"@babel/plugin-proposal-decorators": "7.29.7"'
-                - replace:
-                    pattern: '"@babel/plugin-transform-react-jsx": "[\^~]?7\.[^"]*"'
-                    replacement: '"@babel/plugin-transform-react-jsx": "7.29.7"'
-                - replace:
-                    pattern: '"@babel/plugin-transform-runtime": "[\^~]?7\.[^"]*"'
-                    replacement: '"@babel/plugin-transform-runtime": "7.29.7"'
-                - replace:
-                    pattern: '"@babel/preset-env": "[\^~]?7\.[^"]*"'
-                    replacement: '"@babel/preset-env": "7.29.7"'
-                - replace:
-                    pattern: '"@babel/preset-react": "[\^~]?7\.[^"]*"'
-                    replacement: '"@babel/preset-react": "7.29.7"'
-                - replace:
-                    pattern: '"@babel/runtime": "[\^~]?7\.[^"]*"'
-                    replacement: '"@babel/runtime": "7.29.13"'
-                - replace:
-                    pattern: '"@lhci/cli": "[\^~]?0\.14\.[^"]*"'
-                    replacement: '"@lhci/cli": "0.14.0"'
-                - replace:
-                    pattern: '"@lhci/cli": "[\^~]?0\.15\.[^"]*"'
-                    replacement: '"@lhci/cli": "0.15.1"'
-                - replace:
-                    pattern: '"@searchspring/browserslist-config-snap": "[\^~]?1\.[^"]*"'
-                    replacement: '"@searchspring/browserslist-config-snap": "1.0.7"'
-                - replace:
-                    pattern: '"@searchspring/prettier": "[\^~]?1\.[^"]*"'
-                    replacement: '"@searchspring/prettier": "1.0.2"'
-                - replace:
-                    pattern: '"@typescript-eslint/parser": "[\^~]?8\.[^"]*"'
-                    replacement: '"@typescript-eslint/parser": "8.72.1"'
-                - replace:
-                    pattern: '"babel-loader": "[\^~]?9\.[^"]*"'
-                    replacement: '"babel-loader": "9.2.1"'
-                - replace:
-                    pattern: '"concurrently": "[\^~]?9\.[^"]*"'
-                    replacement: '"concurrently": "9.2.5"'
-                - replace:
-                    pattern: '"core-js": "[\^~]?3\.[^"]*"'
-                    replacement: '"core-js": "3.51.0"'
-                - replace:
-                    pattern: '"css-loader": "[\^~]?6\.[^"]*"'
-                    replacement: '"css-loader": "6.11.0"'
-                - replace:
-                    pattern: '"cypress": "[\^~]?13\.[^"]*"'
-                    replacement: '"cypress": "13.17.0"'
-                - replace:
-                    pattern: '"cypress": "[\^~]?14\.[^"]*"'
-                    replacement: '"cypress": "14.5.4"'
-                - replace:
-                    pattern: '"cypress": "[\^~]?15\.[^"]*"'
-                    replacement: '"cypress": "15.21.1"'
-                - replace:
-                    pattern: '"cypress-fail-fast": "[\^~]?7\.[^"]*"'
-                    replacement: '"cypress-fail-fast": "7.1.1"'
-                - replace:
-                    pattern: '"eslint": "[\^~]?8\.[^"]*"'
-                    replacement: '"eslint": "8.57.1"'
-                - replace:
-                    pattern: '"eslint-plugin-jsx-a11y": "[\^~]?6\.[^"]*"'
-                    replacement: '"eslint-plugin-jsx-a11y": "6.10.2"'
-                - replace:
-                    pattern: '"eslint-plugin-react": "[\^~]?7\.[^"]*"'
-                    replacement: '"eslint-plugin-react": "7.37.5"'
-                - replace:
-                    pattern: '"file-loader": "[\^~]?6\.[^"]*"'
-                    replacement: '"file-loader": "6.2.0"'
-                - replace:
-                    pattern: '"husky": "[\^~]?8\.[^"]*"'
-                    replacement: '"husky": "8.0.3"'
-                - replace:
-                    pattern: '"lint-staged": "[\^~]?13\.[^"]*"'
-                    replacement: '"lint-staged": "13.3.0"'
-                - replace:
-                    pattern: '"prettier": "[\^~]?2\.[^"]*"'
-                    replacement: '"prettier": "2.8.8"'
-                - replace:
-                    pattern: '"sass-loader": "[\^~]?13\.[^"]*"'
-                    replacement: '"sass-loader": "13.3.3"'
-                - replace:
-                    pattern: '"style-loader": "[\^~]?3\.[^"]*"'
-                    replacement: '"style-loader": "3.3.4"'
-                - replace:
-                    pattern: '"wait-on": "[\^~]?8\.[^"]*"'
-                    replacement: '"wait-on": "8.0.5"'
-                - replace:
-                    pattern: '"webpack": "[\^~]?5\.[^"]*"'
-                    replacement: '"webpack": "5.112.2"'
-                - replace:
-                    pattern: '"webpack-bundle-analyzer": "[\^~]?4\.[^"]*"'
-                    replacement: '"webpack-bundle-analyzer": "4.10.2"'
-                - replace:
-                    pattern: '"webpack-cli": "[\^~]?5\.[^"]*"'
-                    replacement: '"webpack-cli": "5.1.4"'
-                - replace:
-                    pattern: '"webpack-dev-server": "[\^~]?4\.[^"]*"'
-                    replacement: '"webpack-dev-server": "4.15.2"'
-                - replace:
-                    pattern: '"webpack-merge": "[\^~]?5\.[^"]*"'
-                    replacement: '"webpack-merge": "5.10.0"'
+                # pin devDependencies to exact versions (latest within the ranges used by the scaffolds)
+                - update:
+                    properties:
+                        "devDependencies": {
+                            "@babel/core": "7.29.13",
+                            "@babel/eslint-parser": "7.29.13",
+                            "@babel/plugin-proposal-class-properties": "7.18.6",
+                            "@babel/plugin-proposal-decorators": "7.29.7",
+                            "@babel/plugin-transform-react-jsx": "7.29.7",
+                            "@babel/plugin-transform-runtime": "7.29.7",
+                            "@babel/preset-env": "7.29.7",
+                            "@babel/preset-react": "7.29.7",
+                            "@babel/runtime": "7.29.13",
+                            "@lhci/cli": "0.15.1",
+                            "@searchspring/browserslist-config-snap": "1.0.7",
+                            "@searchspring/prettier": "1.0.2",
+                            "babel-loader": "9.2.1",
+                            "concurrently": "9.2.5",
+                            "core-js": "3.51.0",
+                            "css-loader": "6.11.0",
+                            "cypress": "13.17.0",
+                            "cypress-fail-fast": "7.1.1",
+                            "eslint": "8.57.1",
+                            "file-loader": "6.2.0",
+                            "husky": "8.0.3",
+                            "lint-staged": "13.3.0",
+                            "prettier": "2.8.8",
+                            "sass": "1.78.0",
+                            "sass-loader": "13.3.3",
+                            "style-loader": "3.3.4",
+                            "wait-on": "8.0.5",
+                            "webpack": "5.112.2",
+                            "webpack-bundle-analyzer": "4.10.2",
+                            "webpack-cli": "5.1.4",
+                            "webpack-dev-server": "4.15.2",
+                            "webpack-merge": "5.10.0"
+                        }
