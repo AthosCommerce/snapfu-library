@@ -1,5 +1,5 @@
 version: 0.79.2
-description: 'release 0.79.2'
+description: 'release 0.79.3'
 
 steps:
     - files:
@@ -9,6 +9,6 @@ steps:
                 - update:
                     properties:
                         "dependencies": {
-                            "@searchspring/snap-preact": "0.79.2",
-                            "@searchspring/snap-preact-components": "0.79.2"
+                            "@searchspring/snap-preact": "0.79.3",
+                            "@searchspring/snap-preact-components": "0.79.3"
                         }
