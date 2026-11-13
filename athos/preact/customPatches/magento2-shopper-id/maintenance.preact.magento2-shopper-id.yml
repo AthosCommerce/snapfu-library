@@ -1,0 +1,29 @@
+version: magento2-shopper-id
+description: 'magento2 shopper id uses the tracking module customer id (customer email or telephone fallback) instead of customer.data_id'
+
+steps:
+    - files:
+        'src/**/*.js':
+            action: find-replace
+            changes:
+                # magento2 plugin - `let shopperId = mageCacheStorage?.customer?.data_id ? mageCacheStorage.customer.data_id : false;`
+                # $1 is the line indentation, $2 is the existing falsy value (false or '')
+                # `shopperId` stays a synchronous value - some projects also use it after this line for logged in state
+                - replace:
+                    pattern: |-
+                        ^([ \t]*)let shopperId = mageCacheStorage\?\.customer\?\.data_id \? mageCacheStorage\.customer\.data_id : (false|'');
+                    replacement: |-
+                        $1// shopper id is the Magento customer id provided by the tracking module, otherwise the customer email or telephone
+                        $1// (`customer.data_id` is a cache timestamp that is also set for guests, not a shopper id)
+                        $1const mageShopperId = mageCacheStorage?.['searchspring-tracking']?.shopper_id || mageCacheStorage?.['athoscommerce-tracking']?.shopper_id;
+                        $1const mageCustomer = mageCacheStorage?.customer || {};
+                        $1const mageEmail = String(mageCustomer.email || '').trim();
+                        $1const mageContact = mageEmail.toLowerCase() || String(mageCustomer.telephone || '').replace(/\D/g, '');
+                        $1let shopperId = mageShopperId ? String(mageShopperId) : mageContact || $2;
+                # shopper context - `id: mageCacheStorage?.customer?.data_id,` (customer id only, no email or telephone fallback)
+                - replace:
+                    pattern: |-
+                        ^([ \t]*)id: mageCacheStorage\?\.customer\?\.data_id,
+                    replacement: |-
+                        $1// shopper id is the Magento customer id provided by the tracking module (`customer.data_id` is a cache timestamp, not a shopper id)
+                        $1id: String(mageCacheStorage?.['searchspring-tracking']?.shopper_id || mageCacheStorage?.['athoscommerce-tracking']?.shopper_id || ''),
