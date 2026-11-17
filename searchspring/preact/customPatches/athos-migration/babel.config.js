@@ -1,6 +1,3 @@
-// DO NOT EDIT - THIS FILE CAN/WILL BE REPLACED!!!
-// ***********************************************
-
 module.exports = (api) => {
 	api.cache.using(() => process.env.NODE_ENV);
 
@@ -11,7 +8,7 @@ module.exports = (api) => {
 				{
 					modules: false,
 					useBuiltIns: 'usage',
-					corejs: '3.19',
+					corejs: '3.30',
 				},
 			],
 			['@babel/preset-react'],

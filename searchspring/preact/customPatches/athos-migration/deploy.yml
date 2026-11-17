@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: athoscommerce/snap-action
-      - name: Run athoscommerce/snap-action
+      - name: Run @athoscommerce/snap-action
         uses: ./
         with:
           # required
