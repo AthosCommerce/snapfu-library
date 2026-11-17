@@ -1,3 +1,6 @@
+// DO NOT EDIT - THIS FILE CAN/WILL BE REPLACED!!!
+// ***********************************************
+
 module.exports = (api) => {
 	api.cache.using(() => process.env.NODE_ENV);
 
