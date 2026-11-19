@@ -5,38 +5,6 @@ const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 const path = require('path');
 
-const universal = merge(common, {
-	mode: 'development',
-	entry: './src/universal.js',
-	output: {
-		filename: 'universal.bundle.js',
-		chunkFilename: 'universal.bundle.chunk.[fullhash:8].[id].js',
-	},
-	target: 'browserslist:universal',
-	module: {
-		rules: [
-			{
-				test: /\.(js|jsx)$/,
-				include: [/node_modules\/@athoscommerce/, path.resolve(__dirname, 'src')],
-				use: {
-					loader: 'babel-loader',
-					options: {
-						presets: [
-							[
-								'@babel/preset-env',
-								{
-									browserslistEnv: 'universal',
-								},
-							],
-						],
-					},
-				},
-			},
-		],
-	},
-	devtool: 'source-map',
-});
-
 const modern = merge(common, {
 	mode: 'development',
 	entry: './src/index.js',
@@ -97,4 +65,4 @@ const modern = merge(common, {
 	devtool: 'source-map',
 });
 
-module.exports = [universal, modern];
+module.exports = modern;
